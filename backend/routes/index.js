@@ -49,13 +49,12 @@ router.post('/send-reminder', async (req, res) => {
     const accountSid = process.env.TWILIO_SID;
     const authToken = process.env.TWILIO_TOKEN;
     const client = require('twilio')(accountSid, authToken);
-    client.messages
+    await client.messages
       .create({
         body: messageText,
         from: '+12568343577',
-        to: `+1${phoneNumber}`
-      })
-      .then(message => console.log(message.sid));
+        to: phoneNumber
+      });
     res.status(200).json({
       sent: true
     });

@@ -1,27 +1,29 @@
 # Send SMS Appointment Reminders + Send and Recieve SMS Texts In A Chat App 
 
-> **This powerful Chat Dashboard allows healthcare administrators to send SMS appointment reminders to patients, and opens a new a chat when patients reply to reminders.**
+> **This powerful Chat Dashboard allows healthcare administrators to send SMS appointment reminders to patients, and opens a new a chat when patients reply to reminders (SMS-to-App).**
 
 NEW GIF HERE
 
 ## Background
 
-This tutorial will guide you through a no-nonsense, easy-to-build chat app that can send and recieve SMS text messages, and send SMS appointment reminders. It has a side panel showing all active chats (a-la iMessage), and it can serve as a jumping-off-point for your fully customized admin dashboard. We'll be using Stream, Twilio, and ngrok for this example. Stream will power all the chat infrastructure, Twilio provides telephony for our SMS messages, and ngrok provides a publically available URL for Stream's wehbooks. This app is build with Node.js and React, but the methodologies can be easily ported to most languages and frameworks.
+This tutorial will guide you through a no-nonsense, easy-to-build chat app that can send and recieve SMS text messages, and send SMS appointment reminders. It has a side panel showing all active chats (a-la iMessage). It also allows for app-to-app messaging and it can serve as a jumping-off-point for your fully customized admin dashboard. 
 
-Oh wurd? You want that git? [repo here](https://github.com/isaidspaghetti/stream-sms-reminder)!
+We'll be using [Stream](https://getstream.io/), [Twilio](https://twilio.com), and [ngrok](https://ngrok.com/) for this example. Stream will power all the chat infrastructure, Twilio provides telephony for our SMS messages, and ngrok provides a publically available URL for Stream's wehbooks. This app is built with [Node.js](https://nodejs.org/en/) and [React](https://reactjs.org), but the methodologies can be easily ported to most languages and frameworks.
+
+Oh wurd? You want that git? [Repo here](https://github.com/isaidspaghetti/stream-sms-reminder)!
 
 ### What is Stream Chat?
 
->*Build real-time chat in less time. Connect patients with administrators and doctors with [HIPAA Compliant](https://getstream.io/blog/hipaa-chat/) Stream Chat messaging platform API & SDKs. Rapidly ship in-app messaging with a highly reliable, scalable chat infrastructure.*
+>*Build real-time chat in less time. Connect patients with administrators and doctors with [HIPAA Compliant](https://getstream.io/blog/hipaa-chat/) Stream Chat messaging platform API & SDKs. Rapidly ship in-app messaging with a reliable, scalable chat infrastructure.*
 >- [Stream Chat & Messaging](https://getstream.io/chat/)
 
 ## Prerequisites
 
 - Basic knowledge of [React Hooks](https://reactjs.org/docs/hooks-intro.html) and [Express](https://expressjs.com/en/api.html). 
-- [node.js](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- [Node.js](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 - [React](https://reactjs.org/docs/getting-started.html)
 - A (free) [Stream](https://getstream.io/dashboard/) Trial Account
-- A (free) [twilio](https://www.twilio.com/try-twilio) Trial Account
+- A (free) [Twilio](https://www.twilio.com/try-twilio) Trial Account
 - A (free) [ngrok](https://dashboard.ngrok.com/get-started/setup) Account
 
 ## Outline
@@ -30,21 +32,22 @@ Oh wurd? You want that git? [repo here](https://github.com/isaidspaghetti/stream
 >- Admin login form
 >- Login endpoint
 >- Render dashboard
-- Send Appointment Reminder
+- Send Appointment Reminders
 >- Admin SMS Reminder form
 >- Set up Twilio account
 >- Reminder endpoint
-- Recieve an SMS Reply
+- Receive SMS messages
 >- Setup ngrok
 >- Send a Twilio webhook
 >- Recieve a Twilio webhook
-- Send SMS messages from a Stream Chat
+- Send SMS messages
 >- Send a Stream webhook
 >- Receive a Stream webhook
+>- Send SMS via Twilio
 
 ## Frontend UI
 
->This app is split into `frontend` and `backend` folders which will use [Stream's React Components](https://github.com/GetStream/stream-chat-react) and [JavaScript Libraries](https://github.com/GetStream/stream-js), respectively. So let's get your Stream account set up first.
+>This app is split into `frontend` and `backend` folders which will use [Stream's React Components](https://github.com/GetStream/stream-chat-react) and [JavaScript Libraries](https://github.com/GetStream/stream-js), respectively. Once everything is set up, you can run the app using `npm install` & `nodemon` on both the `backend` and `frontend` folders. So let's get your Stream account set up first.
 
 ### Stream Configuration
 
@@ -68,7 +71,7 @@ Sign up for your [free Stream trial](https://getstream.io/). Then get to the das
 
 ### `.env` Configuration
 
-The[Git Repo](https://github.com/isaidspaghetti/stream-sms-reminder) contains a file in `backend` titled `.env.example`. Add your Stream API Key and Stream Secret here, then rename the file to `.env`. 
+The [Git Repo](https://github.com/isaidspaghetti/stream-sms-reminder) contains a file in `backend` titled `.env.example`. Add your Stream API Key and Stream Secret here, then rename the file to `.env`. 
 
 <!-- https://gist.github.com/isaidspaghetti/9315e828416e077cd46b069b60703afd -->
 ```bash
@@ -82,11 +85,11 @@ STREAM_API_SECRET= your Stream API secret here
 
 ### Login Form
 
-The login page has simple React form that uses state variables to record changing inputs. 
+The login page has simple React form that uses a state variable for the input. 
 
 ![](images/login-form.png)
 
-You'll obviously want to add your credential securities for a production app, but that's out of our scope in this post. We'll keep it for this example to show you how to collect necessary data to register a Stream user with the backend. For a more detailed explanation on how to build a simple React login form, [check out this post](https://getstream.io/blog/how-to-capture-leads-from-live-chat-in-hubspot/). Here's the code for the form:
+You'll obviously want to add some security checks like a password for a production app, but that's out of our scope in this post. Here's the code for the form:
 
 <!-- https://gist.github.com/isaidspaghetti/f2f22240ad91804fc670030cd7649d9f -->
 ```jsx
@@ -110,7 +113,7 @@ return (
 );
 ```
 
-When submitted the form triggers the `register` function, which will make a simple `HTTP` `POST` to our backend. (In the snippet below the `// ...` is the part that handles the response from the `backend`. We'll get to that in a minute).
+When submitted, the form above triggers the `register` function shown in the next snippet. The `register` function makes a simple `HTTP` `POST` to our backend. (The  `// ...` in the snippet is the part of that function that handles the response from the `backend`. We'll get to that in a minute.)
 
 <!-- https://gist.github.com/isaidspaghetti/aaacfd3ca10ab707613a57566e884633 -->
 ```jsx
@@ -137,9 +140,11 @@ const register = async (e) => {
 };
 ```
 
+Let's look at how we use this information in the `backend`.
+
 ### Login Endpoint
 
-To register a Stream user, we need to first confirm our Stream account from our `backend` by sending our `streamApiKey` and `streamApiSecret` we just set up. 
+To register a Stream user, we need to first confirm our Stream account from our `backend` by sending our `streamApiKey` and `streamApiSecret` we set up earlier. 
 
 <!-- https://gist.github.com/isaidspaghetti/0a79ef5a1169e9db232ae31502ff55ce -->
 ```javascript
@@ -153,7 +158,8 @@ const serverSideClient = new StreamChat(
 );
 ```
 
->Good to keep in mind: all of our complex chat functionality will be handled by Stream methods called with `serverSideClient``.method()`.
+>**Good to know: 
+Stream takes care of all ofall the complex chat infrastructure. Everytime we use a `serverSideClient` method, that's Stream doing it's magic. 🎩**
 
 Next, our `/admin-login` endpoint recieves the form inputs from the `frontend`, and sets up the rest of the client settings. 
 
@@ -583,6 +589,8 @@ To create a custom channel:
 
     ![](images/stream-chat-type-sms.png)
 
+### *Want to add App-to-App Chat now?* 
+>*We're only adding an admin app endpoint in this post. For help with adding a customer login for app-to-app communication, check out [this post](https://getstream.io/blog/how-to-capture-leads-from-live-chat-in-hubspot/).*
 
 ### Add SMS Messages to Existing Channels
 
@@ -699,5 +707,7 @@ You did it! 👏 You have created an app that can successfully send and receive 
 Healthcare Sector Developers have a plethora of options when it comes to chat tools for their administrators. Narrow down your chat app options to those with SMS-to-app messaging and you've still got a lot to sort through. 
 
 Stream offers a novel approach: an affordable and easy-to-use chat and live feed infrastructure with robust API integration that you can tailor to perfectly fit your needs. Hopefully this post goes to show how easily and quickly you can create apps with advanced functionality using Stream. 
+
+>**Reminder: With Stream, you can easily add HIPAA compliance and encryption to any of your apps. [Learn more here](https://getstream.io/blog/hipaa-chat/).**
 
 Check out the [Stream Blog](https://getstream.io/blog/) and [Stream Chat React Docs](https://getstream.github.io/stream-chat-react/) for more inspiration and guidance for your projects. 
