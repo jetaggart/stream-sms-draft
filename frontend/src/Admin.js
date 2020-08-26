@@ -99,7 +99,7 @@ function Admin() {
                 type="text"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="# to text"
+                placeholder="# with country code IE: +15558675309"
                 required
               />
               <label>Msg Text</label>
