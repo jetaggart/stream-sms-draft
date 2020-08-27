@@ -1,4 +1,4 @@
-# Send SMS Appointment Reminders + Send and Recieve SMS Texts In A Chat App 
+# Send SMS Appointment Reminders + Send and Receive SMS Texts In A Chat App 
 
 > **This powerful Chat Dashboard allows healthcare administrators to send SMS appointment reminders to patients, and opens a new a chat when patients reply to reminders (SMS-to-App).**
 
@@ -6,7 +6,7 @@
 
 ## Background
 
-This tutorial will guide you through a no-nonsense, easy-to-build chat app that can send and recieve SMS text messages, and send SMS appointment reminders. It has a side panel showing all active chats (a-la iMessage). It also allows for app-to-app messaging and it can serve as a jumping-off-point for your fully customized admin dashboard. 
+This tutorial will guide you through a no-nonsense, easy-to-build chat app that can send and receive SMS text messages, and send SMS appointment reminders. It has a side panel showing all active chats (a-la iMessage). It also allows for app-to-app messaging and it can serve as a jumping-off point for your fully customized admin dashboard. 
 
 We'll be using [Stream](https://getstream.io/), [Twilio](https://twilio.com), and [ngrok](https://ngrok.com/) for this example. Stream will power all the chat infrastructure, Twilio provides telephony for our SMS messages, and ngrok provides a publically available URL for Stream's wehbooks. This app is built with [Node.js](https://nodejs.org/en/) and [React](https://reactjs.org), but the methodologies can be easily ported to most languages and frameworks.
 
@@ -39,7 +39,7 @@ Oh wurd? You want that git? [Repo here](https://github.com/isaidspaghetti/stream
 - Receive SMS messages
 >- Setup ngrok
 >- Send a Twilio webhook
->- Recieve a Twilio webhook
+>- Receive a Twilio webhook
 - Send SMS messages
 >- Send a Stream webhook
 >- Receive a Stream webhook
@@ -85,7 +85,7 @@ STREAM_API_SECRET= your Stream API secret here
 
 ### Login Form
 
-The login page has simple React form that uses a state variable for the input. 
+The login page has a simple React form that uses a state variable for the input. 
 
 ![](images/login-form.png)
 
@@ -159,11 +159,11 @@ const serverSideClient = new StreamChat(
 ```
 
 >**Good to know:**
-Stream takes care of all of all the complex chat infrastructure for us. Everytime we use a `serverSideClient` method, that's Stream doing it's magic. 🎩
+Stream takes care of all of the complex chat infrastructure for us. Every time we use a `serverSideClient` method, that's Stream doing its magic. 🎩
 
 ### Login Endpoint
 
-Now we're ready to login our administrator. The `/admin-login` endpoint recieves the `frontend` form data and sets up the rest of the Stream chat. 
+Now we're ready to login our administrator. The `/admin-login` endpoint receives the `frontend` form data and sets up the rest of the Stream chat. 
 
 >- Each Stream user needs a token. Use `createToken()` to generate a Stream token.
 >- To add [users](https://getstream.io/chat/docs/init_and_users/?language=js) to the client from a `backend`, use `updateUser()`
@@ -254,7 +254,7 @@ We destructure the `response`, establish a `frontend` instance of Stream (`chatC
 
 ### Frontend Chat Window
 
-Here's the `jsx` that renders our app. Notice how we use `loggedIn` to determine wheter to render a login form or a `<Chat />` component. Each of the components below are provided by Stream. (`Chat`, `ChannelList`, `Channel`, `Window`, `MessageList`, and `MessageInput`). Read up on Stream components [here](https://getstream.github.io/stream-chat-react/).
+Here's the `jsx` that renders our app. Notice how we use `loggedIn` to determine whether to render a login form or a `<Chat />` component. Each of the components below is provided by Stream. (`Chat`, `ChannelList`, `Channel`, `Window`, `MessageList`, and `MessageInput`). Read up on Stream components [here](https://getstream.github.io/stream-chat-react/).
 
 <!-- https://gist.github.com/isaidspaghetti/9fcab9b62c228255c8dbe6bfed31d65e -->
 ```html
@@ -391,7 +391,7 @@ const sendReminder = async (e) => {
 
 The function makes a `POST` request to the `backend` with a `body` that includes a `phoneNumber` (message recipient), and a `message` to send. Then, if the `backend` is successful (`if(sent)`) we change our form input to indicate the message was sent, and set our message back to the default.
 
-There are plenty of ways to indicate a successful send, but just changing the `phoneNumber` state  keeps our tutorial nicely scoped.
+There are plenty of ways to indicate a successful send, but just changing the `phoneNumber` state keeps our tutorial nicely scoped.
 
 ### Reminder Endpoint
 
@@ -427,7 +427,7 @@ router.post('/send-reminder', async (req, res) => {
 
 ### Why Twilio?
 
-SMS messaging requires [telephony](https://en.wikipedia.org/wiki/Telephony) services, so we need an API to help us with that. [Twilio](https://www.twilio.com/) is a hefty monster to tame, and doesn't offer the customization and reliable infrastructure that Stream does. The following sections will show (1) how easy it is to integrate other API's using Stream, and (2) how easy it is to build exactly what you're looking for in a Healthcare Chat with Stream. Check out [this post](https://getstream.io/blog/stream-chat-vs-twilio-chat/) for more details on Stream vs. Twilio.
+SMS messaging requires [telephony](https://en.wikipedia.org/wiki/Telephony) services, so we need an API to help us with that. [Twilio](https://www.twilio.com/) is a hefty monster to tame and doesn't offer the customization and reliable infrastructure that Stream does. The following sections will show (1) how easy it is to integrate other API's using Stream, and (2) how easy it is to build exactly what you're looking for in a Healthcare Chat with Stream. Check out [this post](https://getstream.io/blog/stream-chat-vs-twilio-chat/) for more details on Stream vs. Twilio.
 
 You can easily modify this code to use [other telephony services](https://getvoip.com/blog/2020/03/16/top-twilio-alternatives/) too.
 
@@ -483,7 +483,7 @@ Cool.
 
 Now, we need to let our phone-user reply to our alert via text. We'll achieve this with the power of webhooks ✨. 
 
-We'll be configuring Twilio to `POST` their webhooks to a url called `/receive-sms` in our `backend`.
+We'll be configuring Twilio to `POST` their webhooks to a URL called `/receive-sms` in our `backend`.
 
 >"But how can Twilio find our URL if we're on `localhost`?"
 
@@ -497,7 +497,7 @@ Once you have `ngrok` installed, run the following in the terminal:
 
 >`ngrok http 8080`
 
-`ngrok` will now create a random url to host your `backend` (the `backend` is set to run on port `8080`). Copy and paste the url shown in the terminal.
+`ngrok` will now create a random URL to host your `backend` (the `backend` is set to run on port `8080`). Copy and paste the URL shown in the terminal.
 
 ![](images/ngrok.png)
 
@@ -515,11 +515,11 @@ Click on your Twilio number you created.
 
 ![](images/twilio-number.png)
 
-Scroll down to 'Messages', then add the `ngrok` url you copied + `/receive-sms` in the webhook address bar. You can also add an endpoint to receive any error notifications; just remember you will have to add the endpoint in your `backend` to handle them.
+Scroll down to 'Messages', then add the `ngrok` URL you copied + `/receive-sms` in the webhook address bar. You can also add an endpoint to receive any error notifications; just remember you will have to add the endpoint in your `backend` to handle them.
 
 ![](images/twilio-webhook.png)
 
-Twilio will now be hooking into your `backend` whenever your Twilio phone number receives a text. Keep in mind that, unless you have a paid `ngrok` account, anytime you restart `ngrok` you will have to add the new url in the Twilio console.
+Twilio will now be hooking into your `backend` whenever your Twilio phone number receives a text. Keep in mind that, unless you have a paid `ngrok` account, anytime you restart `ngrok` you will have to add the new URL in the Twilio console.
 
 Now let's deal with that Twilio webhook...
 
@@ -567,13 +567,13 @@ Next, we create a user, then `upsertUser` to our `serverSideClient`. A `channel`
 
 Finally, the `sendMessage()` accepts a `message` object and adds its `text` as a message in the `channel`. 
 
-The new `channel` shows up in the Dashboard `ChannelList`, and the `admin` is able to reply.
+The new `channel` shows up in the Dashboard `ChannelList`, and the `admin` can reply.
 
 > 🐳 Sweet! But wait--what's that `chat type`?!
 
 ### Stream Chat Types
 
-You can create custom Stream [chat types](https://getstream.io/chat/docs/webhooks/?language=js) to systematically change how your app will behave based on what type of chat is occuring. In this case, we're going to create a custom type called `'sms'` so that we can be sure we are only trying to send text messages for app-to-phone channels, rather than app-to-app channels. 
+You can create custom Stream [chat types](https://getstream.io/chat/docs/webhooks/?language=js) to systematically change how your app will behave based on what type of chat is occurring. In this case, we're going to create a custom type called `'sms'` so that we can be sure we are only trying to send text messages for app-to-phone channels, rather than app-to-app channels. 
 
 This will allow you to use this Stream app for all your admin chat types, not just SMS conversations. 
 
@@ -708,7 +708,7 @@ router.post('/stream-outgoing-sms', async (req, res) => {
 
 Let's dissect that. 🥼 We need to filter out what type of events our webhook will act on, so a boolean checks for  `message.new` events, within the `channel_type : 'sms'`, where the sender is `user` with `role : 'admin'`. Learn more about roles [here](https://getstream.io/chat/docs/update_users/?language=js).
 
-Next, we invoke our Twilio `client` and `create` a message object using the webhook's message text (`req.body.message.text`). Then we send `from` our Twilio phone number, and send `to` the phone number that matches the Stream `channel_id`. 
+Next, we invoke our Twilio `client` and `create` a message object using the webhook's message text (`req.body.message.text`). Then we send `from` our Twilio phone number and send `to` the phone number that matches the Stream `channel_id`. 
 
 >Notice the pattern of using Stream's `client` info like `channel_id` and `user.id`. These objects allow us to easily transmit and consume data in our apps.
 
@@ -718,7 +718,7 @@ You did it! 👏 You have created an app that can successfully send and receive 
 
 Healthcare Sector Developers have a plethora of options when it comes to chat tools for their administrators. Narrow down your chat app options to those with SMS-to-app messaging and you've still got a lot to sort through. 
 
-Stream offers a novel approach: an affordable and easy-to-use chat and live feed infrastructure with robust API integration that you can tailor to perfectly fit your needs. Hopefully this post goes to show how easily and quickly you can create apps with advanced functionality using Stream. 
+Stream offers a novel approach: an affordable and easy-to-use chat and live feed infrastructure with a robust API integration that you can tailor to perfectly fit your needs. Hopefully, this post goes to show how easily and quickly you can create apps with advanced functionality using Stream. 
 
 >**Reminder: With Stream, you can easily add HIPAA compliance and encryption to any of your apps. [Learn more here](https://getstream.io/blog/hipaa-chat/).**
 
