@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { StreamChat } = require('stream-chat');
+const twilio = require('twilio');
 
 const streamApiKey = process.env.STREAM_API_KEY;
 const streamApiSecret = process.env.STREAM_API_SECRET;
@@ -48,11 +49,12 @@ router.post('/send-reminder', async (req, res) => {
     const { phoneNumber, messageText } = req.body;
     const accountSid = process.env.TWILIO_SID;
     const authToken = process.env.TWILIO_TOKEN;
-    const client = require('twilio')(accountSid, authToken);
+    const client = twilio(accountSid, authToken);
+
     await client.messages
       .create({
         body: messageText,
-        from: '+12568343577',
+        from: '+14752566269',
         to: phoneNumber
       });
     res.status(200).json({
@@ -66,6 +68,7 @@ router.post('/send-reminder', async (req, res) => {
 router.post('/receive-sms', async (req, res) => {
   const phoneNumber = req.body.From.replace('+', '');
   const messageText = req.body.Body;
+  console.log('got here');
 
   try {
     const filter = { type: 'sms', members: { $in: [phoneNumber] } };
@@ -112,12 +115,12 @@ router.post('/stream-outgoing-sms', async (req, res) => {
     try {
       const accountSid = process.env.TWILIO_SID;
       const authToken = process.env.TWILIO_TOKEN;
-      const client = require('twilio')(accountSid, authToken);
+      const client = twilio(accountSid, authToken);
 
       await client.messages
         .create({
           body: req.body.message.text,
-          from: '+12568343577',
+          from: '+14752566269',
           to: `+${req.body.channel_id}`
         });
 

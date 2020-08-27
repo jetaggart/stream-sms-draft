@@ -250,7 +250,7 @@ const register = async (e) => {
 };
 ```
 
-We destructure the `response`, establish a `frontend` instance of Stream (`chatClient`), and configure our user with `setUser`. Your `frontend` Stream chat is ready to render. Let's see why we set the state variable, `setLoggIn` to `true`.
+We destructure the `response`, establish a `frontend` instance of Stream (`chatClient`), and configure our user with `setUser`. Your `frontend` Stream chat is ready to render. Let's see why we set the state variable, `setLogIn` to `true`.
 
 ### Frontend Chat Window
 
