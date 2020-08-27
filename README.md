@@ -3,7 +3,6 @@
 > **This powerful Chat Dashboard allows healthcare administrators to send SMS appointment reminders to patients, and opens a new a chat when patients reply to reminders (SMS-to-App).**
 
 ![](images/gif.gif) 
-NEW GIF HERE
 
 ## Background
 
